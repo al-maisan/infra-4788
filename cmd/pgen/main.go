@@ -49,31 +49,31 @@ func main() {
 		data, err = downloadFileWithTimeout(*url, filename, *timeout)
 	}
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Fatal().Msg(err.Error())
 	}
 
 	bst := deneb.BeaconState{}
 	err = bst.UnmarshalSSZ(data)
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Fatal().Msg(err.Error())
 	}
 	log.Info().Msgf("slot: %d", bst.LatestBlockHeader.Slot)
 	log.Info().Msgf("ParentRoot: %v", hex.EncodeToString(bst.LatestBlockHeader.ParentRoot[:]))
 
 	root, err := bst.GetTree()
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Fatal().Msg(err.Error())
 	}
 	// This is from https://github.com/ethereum/consensus-specs
 	// ./tests/core/pyspec/eth2spec/deneb/mainnet.py:FINALIZED_ROOT_GINDEX = GeneralizedIndex(105)
 	proof, err := root.Prove(FINALIZED_ROOT_GINDEX)
 	if err != nil || proof == nil {
-		log.Error().Msg(err.Error())
+		log.Fatal().Msg(err.Error())
 	}
 
 	json, err := toJSON(*proof)
 	if err != nil {
-		log.Error().Msg(err.Error())
+		log.Fatal().Msg(err.Error())
 	}
 
 	log.Info().Msg(string(json))
