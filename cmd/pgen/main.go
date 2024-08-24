@@ -60,12 +60,15 @@ func main() {
 		log.Fatal().Msg(err.Error())
 	}
 	log.Info().Msgf("slot: %d", bst.LatestBlockHeader.Slot)
-	log.Info().Msgf("ParentRoot: %v", hex.EncodeToString(bst.LatestBlockHeader.ParentRoot[:]))
+	parentRoot := hex.EncodeToString(bst.LatestBlockHeader.ParentRoot[:])
+	log.Info().Msgf("ParentRoot: %v", parentRoot)
 
 	root, err := bst.GetTree()
 	if err != nil {
 		log.Fatal().Msg(err.Error())
 	}
+	stateRoot := hex.EncodeToString(root.Hash())
+	log.Info().Msgf("state root: '%s'", stateRoot)
 	// This is from https://github.com/ethereum/consensus-specs
 	// ./tests/core/pyspec/eth2spec/deneb/mainnet.py:FINALIZED_ROOT_GINDEX = GeneralizedIndex(105)
 	proof, err := root.Prove(FINALIZED_ROOT_GINDEX)
@@ -73,7 +76,7 @@ func main() {
 		log.Fatal().Msg(err.Error())
 	}
 
-	json, err := toJSON(*proof, uint64(bst.LatestBlockHeader.Slot))
+	json, err := toJSON(*proof, uint64(bst.LatestBlockHeader.Slot), parentRoot, stateRoot)
 	if err != nil {
 		log.Fatal().Msg(err.Error())
 	}
