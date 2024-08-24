@@ -18,10 +18,16 @@ func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
-	url := flag.String("url", "", "The URL to download the file from")
+	url := flag.String("url", "", "The URL to download the BeaconState data from")
 	path := flag.String("input", "", "The full path to the BeaconState input file")
 	timeout := flag.Duration("timeout", 10*time.Second, "Timeout for the HTTP request")
 
+	flag.Usage = func() {
+		// Program title and description
+		fmt.Fprintf(os.Stderr, "proof generator - generates proofs for ethereum BeaconState data.\n")
+		fmt.Fprintf(os.Stderr, "Usage:\n")
+		flag.PrintDefaults() // Print default flag usage information
+	}
 	// Parse the command line flags
 	flag.Parse()
 

@@ -1,4 +1,4 @@
-.PHONY: all build 
+.PHONY: all build
 
 BIN_DIR := ./bin
 version := $(shell git rev-parse --short=12 HEAD)
