@@ -12,6 +12,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const FINALIZED_ROOT_GINDEX = 105
+
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
@@ -56,7 +58,9 @@ func main() {
 	if err != nil {
 		log.Error().Msg(err.Error())
 	}
-	proof, err := root.Prove(40)
+	// This is from https://github.com/ethereum/consensus-specs
+	// ./tests/core/pyspec/eth2spec/deneb/mainnet.py:FINALIZED_ROOT_GINDEX = GeneralizedIndex(105)
+	proof, err := root.Prove(FINALIZED_ROOT_GINDEX)
 	if err != nil || proof == nil {
 		log.Error().Msg(err.Error())
 	}
