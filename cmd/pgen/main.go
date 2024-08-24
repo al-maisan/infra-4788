@@ -34,6 +34,9 @@ func main() {
 	if *url == "" && *path == "" {
 		log.Fatal().Msg("You need to pass either a download URL or a path to a file with BeaconState data.")
 	}
+	if *path != "" {
+		*url = ""
+	}
 	if *url != "" && *path != "" {
 		log.Fatal().Msg("Please specify either a download URL XOR a path to a file with the BeaconState data, not both.")
 	}
@@ -57,6 +60,7 @@ func main() {
 		log.Fatal().Msg(err.Error())
 	}
 	log.Info().Msgf("slot: %d", bst.LatestBlockHeader.Slot)
+	log.Info().Msgf("GenesisTime: %d", bst.GenesisTime)
 	log.Info().Msgf("ParentRoot: %v", hex.EncodeToString(bst.LatestBlockHeader.ParentRoot[:]))
 	log.Info().Msgf("StateRoot: %v", hex.EncodeToString(bst.LatestBlockHeader.StateRoot[:]))
 
@@ -71,10 +75,10 @@ func main() {
 		log.Fatal().Msg(err.Error())
 	}
 
-	json, err := toJSON(*proof)
+	json, err := toJSON(*proof, uint64(bst.LatestBlockHeader.Slot))
 	if err != nil {
 		log.Fatal().Msg(err.Error())
 	}
 
-	log.Info().Msg(string(json))
+	fmt.Println(string(json))
 }
