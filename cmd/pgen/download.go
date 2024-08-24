@@ -85,7 +85,6 @@ func getBeaconHeader(url string, timeout time.Duration) (*BeaconHeader, error) {
 func downloadFileWithTimeout(url, filename string, timeout time.Duration) ([]byte, error) {
 	var (
 		body []byte
-		err  error
 	)
 
 	if strings.HasPrefix(url, "http") {
@@ -140,13 +139,26 @@ func downloadFileWithTimeout(url, filename string, timeout time.Duration) ([]byt
 
 		log.Info().Str("Filename", filename).Msg("File successfully written")
 	} else {
-		body, err = os.ReadFile(url)
-		if err != nil {
-			log.Error().Err(err).Msg("Failed to read input file")
-			return nil, err
-		}
+		return nil, fmt.Errorf("invalid url: '%v'", url)
 	}
 
 	// Return the response body to the caller
 	return body, nil
+}
+
+func fetchBeaconState(url string, timeout time.Duration) ([]byte, error) {
+	u1 := url + "/eth/v1/beacon/headers/finalized"
+	bhm, err := getBeaconHeader(u1, timeout)
+	if err != nil {
+		return nil, err
+	}
+	bh := bhm.Data.Header.Message
+	log.Info().Msgf("slot: %v, state root: %v", bh.Slot, bh.StateRoot)
+	filename := fmt.Sprintf("fbs-%s.%d", bh.Slot, time.Now().Unix())
+	u2 := url + "/eth/v2/debug/beacon/states/" + bh.StateRoot
+	data, err := downloadFileWithTimeout(u2, filename, timeout)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
 }

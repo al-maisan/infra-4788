@@ -18,7 +18,7 @@ func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
-	url := flag.String("url", "", "The URL to download the BeaconState data from")
+	url := flag.String("url", "https://docs-demo.quiknode.pro/", "The URL to download the BeaconState data from")
 	path := flag.String("input", "", "The full path to the BeaconState input file")
 	timeout := flag.Duration("timeout", 10*time.Second, "Timeout for the HTTP request")
 
@@ -43,21 +43,9 @@ func main() {
 		err  error
 	)
 	if *path != "" {
-		data, err = downloadFileWithTimeout(*path, "", *timeout)
+		data, err = os.ReadFile(*path)
 	} else {
-		u1 := *url + "/eth/v1/beacon/headers/finalized"
-		bhm, err := getBeaconHeader(u1, *timeout)
-		if err != nil {
-			log.Fatal().Msg(err.Error())
-		}
-		bh := bhm.Data.Header.Message
-		log.Info().Msgf("slot: %v, state root: %v", bh.Slot, bh.StateRoot)
-		filename := fmt.Sprintf("fbs-%s.%d", bh.Slot, time.Now().Unix())
-		u2 := *url + "/eth/v2/debug/beacon/states/" + bh.StateRoot
-		data, err = downloadFileWithTimeout(u2, filename, *timeout)
-		if err != nil {
-			log.Fatal().Msg(err.Error())
-		}
+		data, err = fetchBeaconState(*url, *timeout)
 	}
 	if err != nil {
 		log.Fatal().Msg(err.Error())
