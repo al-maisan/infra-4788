@@ -32,10 +32,10 @@ func main() {
 	flag.Parse()
 
 	if *url == "" && *path == "" {
-		log.Fatal().Msg("You need to pass either a download URL or a path to the BeaconState")
+		log.Fatal().Msg("You need to pass either a download URL or a path to a file with BeaconState data.")
 	}
 	if *url != "" && *path != "" {
-		log.Fatal().Msg("Please specify either a download URL XOR a path to the BeaconState, no both")
+		log.Fatal().Msg("Please specify either a download URL XOR a path to a file with the BeaconState data, not both.")
 	}
 	filename := fmt.Sprintf("fbs.%d", time.Now().Unix())
 
