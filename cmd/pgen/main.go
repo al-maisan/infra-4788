@@ -17,18 +17,29 @@ func main() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
 	url := flag.String("url", "", "The URL to download the file from")
+	path := flag.String("input", "", "The full path to the BeaconState input file")
 	timeout := flag.Duration("timeout", 10*time.Second, "Timeout for the HTTP request")
 
 	// Parse the command line flags
 	flag.Parse()
 
-	// Check if the URL is provided
-	if *url == "" {
-		log.Fatal().Msg("URL is required")
+	if *url == "" && *path == "" {
+		log.Fatal().Msg("You need to pass either a download URL or a path to the BeaconState")
+	}
+	if *url != "" && *path != "" {
+		log.Fatal().Msg("Please specify either a download URL XOR a path to the BeaconState, no both")
 	}
 	filename := fmt.Sprintf("fbs.%d", time.Now().Unix())
 
-	data, err := downloadFileWithTimeout(*url, filename, *timeout)
+	var (
+		data []byte
+		err  error
+	)
+	if path != nil {
+		data, err = downloadFileWithTimeout(*path, filename, *timeout)
+	} else {
+		data, err = downloadFileWithTimeout(*url, filename, *timeout)
+	}
 	if err != nil {
 		log.Error().Msg(err.Error())
 	}
