@@ -37,16 +37,27 @@ func main() {
 	if *url != "" && *path != "" {
 		log.Fatal().Msg("Please specify either a download URL XOR a path to a file with the BeaconState data, not both.")
 	}
-	filename := fmt.Sprintf("fbs.%d", time.Now().Unix())
 
 	var (
 		data []byte
 		err  error
 	)
-	if path != nil {
-		data, err = downloadFileWithTimeout(*path, filename, *timeout)
+	if *path != "" {
+		data, err = downloadFileWithTimeout(*path, "", *timeout)
 	} else {
-		data, err = downloadFileWithTimeout(*url, filename, *timeout)
+		u1 := *url + "/eth/v1/beacon/headers/finalized"
+		bhm, err := getBeaconHeader(u1, *timeout)
+		if err != nil {
+			log.Fatal().Msg(err.Error())
+		}
+		bh := bhm.Data.Header.Message
+		log.Info().Msgf("slot: %v, state root: %v", bh.Slot, bh.StateRoot)
+		filename := fmt.Sprintf("fbs-%s.%d", bh.Slot, time.Now().Unix())
+		u2 := *url + "/eth/v2/debug/beacon/states/" + bh.StateRoot
+		data, err = downloadFileWithTimeout(u2, filename, *timeout)
+		if err != nil {
+			log.Fatal().Msg(err.Error())
+		}
 	}
 	if err != nil {
 		log.Fatal().Msg(err.Error())
@@ -59,6 +70,7 @@ func main() {
 	}
 	log.Info().Msgf("slot: %d", bst.LatestBlockHeader.Slot)
 	log.Info().Msgf("ParentRoot: %v", hex.EncodeToString(bst.LatestBlockHeader.ParentRoot[:]))
+	log.Info().Msgf("StateRoot: %v", hex.EncodeToString(bst.LatestBlockHeader.StateRoot[:]))
 
 	root, err := bst.GetTree()
 	if err != nil {

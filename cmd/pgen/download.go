@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -10,6 +12,75 @@ import (
 
 	"github.com/rs/zerolog/log"
 )
+
+// Data represents the structure of the JSON data inside "data"
+type Data struct {
+	Root      string `json:"root"`
+	Canonical bool   `json:"canonical"`
+	Header    Header `json:"header"`
+}
+
+// Header represents the structure of the JSON data inside "header"
+type Header struct {
+	Message   Message `json:"message"`
+	Signature string  `json:"signature"`
+}
+
+// Message represents the structure of the JSON data inside "message"
+type Message struct {
+	Slot          string `json:"slot"`
+	ProposerIndex string `json:"proposer_index"`
+	ParentRoot    string `json:"parent_root"`
+	StateRoot     string `json:"state_root"`
+	BodyRoot      string `json:"body_root"`
+}
+
+// BeaconHeader represents the full JSON response structure
+type BeaconHeader struct {
+	ExecutionOptimistic bool `json:"execution_optimistic"`
+	Finalized           bool `json:"finalized"`
+	Data                Data `json:"data"`
+}
+
+// getBeaconHeader fetches JSON from a URL, parses it, and returns the data
+func getBeaconHeader(url string, timeout time.Duration) (*BeaconHeader, error) {
+	// Create a context with a timeout
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	// Create the HTTP request
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to create HTTP request")
+		return nil, err
+	}
+
+	req.Header.Set("Accept", "application/json")
+	// Perform the HTTP request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to execute HTTP request")
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// Check if the response status is OK
+	if resp.StatusCode != http.StatusOK {
+		log.Error().Int("StatusCode", resp.StatusCode).Msg("Received non-OK HTTP status")
+		return nil, fmt.Errorf("received non-OK HTTP status: %d", resp.StatusCode)
+	}
+
+	// Parse the JSON response
+	var bh BeaconHeader
+	err = json.NewDecoder(resp.Body).Decode(&bh)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to decode JSON response")
+		return nil, err
+	}
+
+	return &bh, nil
+}
 
 func downloadFileWithTimeout(url, filename string, timeout time.Duration) ([]byte, error) {
 	var (
