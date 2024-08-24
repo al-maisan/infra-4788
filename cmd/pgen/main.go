@@ -60,9 +60,7 @@ func main() {
 		log.Fatal().Msg(err.Error())
 	}
 	log.Info().Msgf("slot: %d", bst.LatestBlockHeader.Slot)
-	log.Info().Msgf("GenesisTime: %d", bst.GenesisTime)
 	log.Info().Msgf("ParentRoot: %v", hex.EncodeToString(bst.LatestBlockHeader.ParentRoot[:]))
-	log.Info().Msgf("StateRoot: %v", hex.EncodeToString(bst.LatestBlockHeader.StateRoot[:]))
 
 	root, err := bst.GetTree()
 	if err != nil {
