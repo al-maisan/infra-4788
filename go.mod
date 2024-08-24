@@ -2,13 +2,15 @@ module github.com/al-maisan/infra-4788
 
 go 1.22.6
 
-require github.com/rs/zerolog v1.33.0
+require (
+	github.com/attestantio/go-eth2-client v0.21.10
+	github.com/ferranbt/fastssz v0.1.4
+	github.com/rs/zerolog v1.33.0
+)
 
 require (
-	github.com/attestantio/go-eth2-client v0.21.10 // indirect
 	github.com/emicklei/dot v1.6.2 // indirect
 	github.com/fatih/color v1.16.0 // indirect
-	github.com/ferranbt/fastssz v0.1.4 // indirect
 	github.com/goccy/go-yaml v1.9.2 // indirect
 	github.com/holiman/uint256 v1.2.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect

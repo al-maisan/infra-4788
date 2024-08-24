@@ -1,6 +1,6 @@
 # what is this?
 
-This is demo software that shows the construction of merkle proofs for a single ehereum [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconstate) property: `finalized_checkpoint.root`.
+This is demo software that shows the construction of merkle proofs for a single ehereum [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconstate) property: "`finalized_checkpoint.root`".
 
 # how to build it
 
@@ -39,7 +39,7 @@ $ bin/pgen
 2024-08-24T19:00:41+02:00 INF state root: '5875ec5bab5d9bf89b6e29962e15e53739ca34a4822e4e0068d82ac2bab211fd'
 ```
 
-As you can see the beacon state is also written to a file (in SSZ-snappy format) so you can re-run the program for it again.
+As you can see the beacon state was also written to a file (in SSZ-snappy format) so you can re-run the program for it again.
 
 The output produced looks as follows:
 ```json
@@ -61,7 +61,7 @@ The output produced looks as follows:
 }
 ```
 
-The bottom three properties (index, leaf, hashes) constitute the proof and are need for validation.
+The bottom three properties (index, leaf, hashes) constitute the proof and are needed for validation.
 
 ## run using a beacon state stored in a local (SSZ-snappy) file
 

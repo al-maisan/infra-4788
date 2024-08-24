@@ -12,6 +12,7 @@ clean:
 	rm -f $(BIN_DIR)/pgen
 
 build: lint
+	go mod tidy
 	rm -f $(BIN_DIR)/pgen
 	go build -o $(BIN_DIR)/pgen -v -ldflags \
 		"-X main.rev=$(version) -X main.bts=$(timestamp)" cmd/pgen/*.go
