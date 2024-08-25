@@ -90,8 +90,8 @@ It does this by
 - fetching the most recent finalized [BeaconBlock](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconblock) and the respective [BeaconState](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconstate)
 - unmarshaling both the BeaconBlock and the BeaconState
 - converting them to merkle trees for the purpose of proof generation
-- grafting the BeaconState subtree onto the BeaconBlock tree in order to gain a full merkle tree whose proofs culminate in the BeaconBlock root
-- generating the actual proof
+- [grafting the BeaconState subtree onto the BeaconBlock tree](https://github.com/al-maisan/infra-4788/blob/main/cmd/pgen/main.go#L101) in order to gain a full merkle tree whose proofs culminate in the BeaconBlock root
+- [generating the actual proof](https://github.com/al-maisan/infra-4788/blob/main/cmd/pgen/main.go#L112)
 - printing it in `json` format
 
 Please note: I have [slightly extended](https://github.com/al-maisan/fastssz/commit/b4be06eccf42bee8badb0b430752aaed26981858) the [github.com/ferranbt/fastssz](https://github.com/ferranbt/fastssz) repository to enable the tree grafting.
