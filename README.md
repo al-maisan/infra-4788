@@ -14,8 +14,10 @@ The following command displays a short help text:
 $ bin/pgen -h
 proof generator - generates proofs for ethereum BeaconState data.
 Usage:
-  -input string
-    	The full path to the BeaconState input file
+  -blockp string
+    	The full path to the BeaconBlock json file
+  -statep string
+    	The full path to the BeaconState SSZ-snappy file
   -timeout duration
     	Timeout for the HTTP request (default 10s)
   -url string
@@ -32,45 +34,66 @@ Just run `bin/pgen` to download the most recent finalized beacon state and it wi
 Example:
 ```
 $ bin/pgen
-2024-08-24T19:00:27+02:00 INF slot: 9807808, state root: 0x5875ec5bab5d9bf89b6e29962e15e53739ca34a4822e4e0068d82ac2bab211fd
-2024-08-24T19:00:31+02:00 INF File successfully written Filename=fbs-9807808.1724518827
-2024-08-24T19:00:31+02:00 INF slot: 9807808
-2024-08-24T19:00:31+02:00 INF ParentRoot: 073810e1f6f095e0d8f1a78f20c23c063b3c47e12e6138a93032ef144d4ceba4
-2024-08-24T19:00:41+02:00 INF state root: '5875ec5bab5d9bf89b6e29962e15e53739ca34a4822e4e0068d82ac2bab211fd'
+2024-08-25T15:49:12+02:00 INF BeaconBlock, slot: 9814080, parent_root: d105e75cf23641d5fd725e8028a89b683b37b66905566413300591cc1a882a4f, state_root: 7a5a297644b332b413691ec46b46329addfd202151686a4533d72b033f7fa2db
+2024-08-25T15:49:16+02:00 INF File successfully written Filename=bstate-9814080.1724593752
+2024-08-25T15:49:16+02:00 INF BeaconState, slot: 9814080, parent_root: d105e75cf23641d5fd725e8028a89b683b37b66905566413300591cc1a882a4f
+2024-08-25T15:49:24+02:00 INF BeaconBlock, before grafting, hash: 320c55726160c7fad09077dcae4d6df1eb11227fe374c3d305594b5e3e279204
+2024-08-25T15:49:24+02:00 INF BeaconBlock, after grafting, hash: 320c55726160c7fad09077dcae4d6df1eb11227fe374c3d305594b5e3e279204
 ```
 
-As you can see the beacon state was also written to a file (in SSZ-snappy format) so you can re-run the program for it again.
+Please note: this writes 2 files:
+- [BeaconBlock](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconblock) in `json` format to `bblock.9814080`
+- [BeaconState](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconstate) in `SSZ-snappy` format to `bstate-9814080.1724593752`
+
+You can use these files to re-run the program on the same block.
 
 The output produced looks as follows:
 ```json
 {
-  "slot": 9807808,
-  "parent_root": "073810e1f6f095e0d8f1a78f20c23c063b3c47e12e6138a93032ef144d4ceba4",
-  "state_root": "5875ec5bab5d9bf89b6e29962e15e53739ca34a4822e4e0068d82ac2bab211fd",
-  "block_time": 1724517719,
-  "index": 105,
-  "leaf": "2a001e07d57e5e48da758ef6e815042f97e8565941c58983e1c3a3e270a7884e",
+  "slot": 9814080,
+  "beacon_block_root": "320c55726160c7fad09077dcae4d6df1eb11227fe374c3d305594b5e3e279204",
+  "beacon_state_root": "7a5a297644b332b413691ec46b46329addfd202151686a4533d72b033f7fa2db",
+  "finalized_root": "5523029ad957d5049a7d2336d3a9cb31bbb20612aa05ffbedd9a6f14e944046f",
+  "block_time": 1724592983,
+  "index": 745,
+  "leaf": "5523029ad957d5049a7d2336d3a9cb31bbb20612aa05ffbedd9a6f14e944046f",
   "hashes": [
-    "3cad040000000000000000000000000000000000000000000000000000000000",
-    "8c4dd08fd8b5d27c2329b738550630a503150b12c5859ca48987e4ca598b140e",
-    "261f2f3c6566c808887f617f1942f39fdb6d179044fb0a1fcf6bb3b8f96b9463",
-    "c94ea64c6b9a2808ca0e07f32eb5176ce9c49669ab8f4e8e5e4cf64e696fba85",
-    "319781ab3ea888a99904bde940aab3fa4c041e7745a9980810ad3a390cee26c6",
-    "a11922ead3e2eee1ccc4b2fa91e7e6bea3a2e3a8e3aa1dbe3d0c4969e86322e8"
+    "00ae040000000000000000000000000000000000000000000000000000000000",
+    "fd23d5277e46023ed819d9b25713dfb88ada62452e2a42c22d4500176a36901f",
+    "21c0b67dcc28f8b0bd2fb1dbef45710f42c1613b9d0db3bc524e4a8e95c660fa",
+    "b17b8a68401c41a894a5736755fafebcbf43860f95d838b15df6d283a7cc8e9d",
+    "e8144504535c4b0315705cb0d24c1ac200ea0b1f77b60e5f7fcb2a4634d8d00b",
+    "6791b76ab2bdd75660c63314765f4f0878b67fce5d0ff3cd3f29a35b6f94f275",
+    "d105e75cf23641d5fd725e8028a89b683b37b66905566413300591cc1a882a4f",
+    "cda7207fa2a3fdabbe5f0328dc2be26359b7ba23bbdd76ed1e9cb94142058593",
+    "ef14734d032b181ae448830440035bddfe9e09618d74a2f4ee3b11ace5dc1bf9"
   ]
 }
 ```
 
-The bottom three properties (index, leaf, hashes) constitute the proof and are needed for validation.
+The bottom three properties (index, leaf, hashes) constitute the proof and are needed for validation along with `block_time` and `beacon_block_root`.
 
-## run using a beacon state stored in a local (SSZ-snappy) file
+## run using block data on the local file system
 
 Example:
 ```
-$ bin/pgen -input fbs-9807808.1724518827
-2024-08-24T19:04:52+02:00 INF slot: 9807808
-2024-08-24T19:04:52+02:00 INF ParentRoot: 073810e1f6f095e0d8f1a78f20c23c063b3c47e12e6138a93032ef144d4ceba4
-2024-08-24T19:05:03+02:00 INF state root: '5875ec5bab5d9bf89b6e29962e15e53739ca34a4822e4e0068d82ac2bab211fd'
+$ bin/pgen -blockp bblock.9814080 -statep bstate-9814080.1724593752|jq
+2024-08-25T15:54:24+02:00 INF BeaconBlock, slot: 9814080, parent_root: d105e75cf23641d5fd725e8028a89b683b37b66905566413300591cc1a882a4f, state_root: 7a5a297644b332b413691ec46b46329addfd202151686a4533d72b033f7fa2db
+2024-08-25T15:54:25+02:00 INF BeaconState, slot: 9814080, parent_root: d105e75cf23641d5fd725e8028a89b683b37b66905566413300591cc1a882a4f
+2024-08-25T15:54:32+02:00 INF BeaconBlock, before grafting, hash: 320c55726160c7fad09077dcae4d6df1eb11227fe374c3d305594b5e3e279204
+2024-08-25T15:54:32+02:00 INF BeaconBlock, after grafting, hash: 320c55726160c7fad09077dcae4d6df1eb11227fe374c3d305594b5e3e279204
 ```
 
 The generated `json` is the same as shown above.
+
+# proof generation
+
+This demo software generates a proof for the `finalized_checkpoint.root` property.
+
+It does this by
+- fetching the most recent finalized [BeaconBlock](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconblock) and the respective [BeaconState](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconstate)
+- unmarshaling both the BeaconBlock and the BeaconState
+- converting them to merkle trees for the purpose of proof generation
+- grafting the BeaconState subtree onto the BeaconBlock tree in order to gain a full merkle tree whose proofs culminate in the BeaconBlock root
+- generating the actual proof
+- printing it in `json` format
