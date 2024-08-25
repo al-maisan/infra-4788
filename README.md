@@ -97,3 +97,5 @@ It does this by
 - grafting the BeaconState subtree onto the BeaconBlock tree in order to gain a full merkle tree whose proofs culminate in the BeaconBlock root
 - generating the actual proof
 - printing it in `json` format
+
+Please note: I have [slightly extended](https://github.com/al-maisan/fastssz/commit/b4be06eccf42bee8badb0b430752aaed26981858) the [github.com/ferranbt/fastssz](https://github.com/ferranbt/fastssz) repository to enable the tree grafting.
