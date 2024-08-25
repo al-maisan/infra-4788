@@ -19,7 +19,7 @@ func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
-	url := flag.String("url", "https://docs-demo.quiknode.pro/", "The URL to download the BeaconState data from")
+	url := flag.String("url", "https://docs-demo.quiknode.pro/", "The URL to download the beacon chain data from")
 	blockp := flag.String("blockp", "", "The full path to the BeaconBlock json file")
 	statep := flag.String("statep", "", "The full path to the BeaconState SSZ-snappy file")
 	timeout := flag.Duration("timeout", 10*time.Second, "Timeout for the HTTP request")

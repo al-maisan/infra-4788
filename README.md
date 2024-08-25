@@ -21,7 +21,7 @@ Usage:
   -timeout duration
     	Timeout for the HTTP request (default 10s)
   -url string
-    	The URL to download the BeaconState data from (default "https://docs-demo.quiknode.pro/")
+    	The URL to download the beacon chain data from (default "https://docs-demo.quiknode.pro/")
 ```
 
 # how to run it
