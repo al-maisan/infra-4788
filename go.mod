@@ -2,11 +2,11 @@ module github.com/al-maisan/infra-4788
 
 go 1.22.6
 
-replace github.com/ferranbt/fastssz => /home/user/src/github.com/ferranbt/fastssz
+replace github.com/ferranbt/fastssz => github.com/al-maisan/fastssz v0.0.0-20240825133945-fbb8bf0ade28
 
 require (
 	github.com/attestantio/go-eth2-client v0.21.10
-	github.com/ferranbt/fastssz v0.1.4
+	github.com/ferranbt/fastssz v0.1.3
 	github.com/rs/zerolog v1.33.0
 )
 
