@@ -100,13 +100,11 @@ func main() {
 
 	// graft the BeaconState subtree onto the BeaconBlock tree
 	bbHashBefore := bbRoot.Hash()
-	log.Info().Msgf("BeaconBlock, before grafting, hash: %v", hex.EncodeToString(bbHashBefore))
 	ok := graftSubtree(bbRoot, bblock.StateRoot[:], bsRoot)
 	if !ok {
 		log.Fatal().Msg("BeaconBlock tree grafting failed")
 	}
 	bbHashAfter := bbRoot.Hash()
-	log.Info().Msgf("BeaconBlock, after grafting, hash: %v", hex.EncodeToString(bbHashAfter))
 	if !bytes.Equal(bbHashBefore, bbHashAfter) {
 		log.Fatal().Msg("BeaconBlock tree grafting caused tree root mismatch")
 	}

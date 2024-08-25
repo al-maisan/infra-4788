@@ -26,9 +26,9 @@ Usage:
 
 # how to run it
 
-## run by downloading the most recent _finalized_ beacon state
+## run by downloading the most recent _finalized_ beacon chain data
 
-Just run `bin/pgen` to download the most recent finalized beacon state and it will compute the proof for it.
+Just run `bin/pgen` to download the most recent finalized beacon block/state and it will compute the proof for it.
 
 
 Example:
@@ -37,13 +37,11 @@ $ bin/pgen
 2024-08-25T15:49:12+02:00 INF BeaconBlock, slot: 9814080, parent_root: d105e75cf23641d5fd725e8028a89b683b37b66905566413300591cc1a882a4f, state_root: 7a5a297644b332b413691ec46b46329addfd202151686a4533d72b033f7fa2db
 2024-08-25T15:49:16+02:00 INF File successfully written Filename=bstate-9814080.1724593752
 2024-08-25T15:49:16+02:00 INF BeaconState, slot: 9814080, parent_root: d105e75cf23641d5fd725e8028a89b683b37b66905566413300591cc1a882a4f
-2024-08-25T15:49:24+02:00 INF BeaconBlock, before grafting, hash: 320c55726160c7fad09077dcae4d6df1eb11227fe374c3d305594b5e3e279204
-2024-08-25T15:49:24+02:00 INF BeaconBlock, after grafting, hash: 320c55726160c7fad09077dcae4d6df1eb11227fe374c3d305594b5e3e279204
 ```
 
 Please note: this writes 2 files:
-- [BeaconBlock](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconblock) in `json` format to `bblock.9814080`
-- [BeaconState](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconstate) in `SSZ-snappy` format to `bstate-9814080.1724593752`
+- [BeaconBlock](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconblock) data in `json` format to `bblock.9814080`
+- [BeaconState](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconstate) data in `SSZ-snappy` format to `bstate-9814080.1724593752`
 
 You can use these files to re-run the program on the same block.
 
@@ -80,15 +78,13 @@ Example:
 $ bin/pgen -blockp bblock.9814080 -statep bstate-9814080.1724593752|jq
 2024-08-25T15:54:24+02:00 INF BeaconBlock, slot: 9814080, parent_root: d105e75cf23641d5fd725e8028a89b683b37b66905566413300591cc1a882a4f, state_root: 7a5a297644b332b413691ec46b46329addfd202151686a4533d72b033f7fa2db
 2024-08-25T15:54:25+02:00 INF BeaconState, slot: 9814080, parent_root: d105e75cf23641d5fd725e8028a89b683b37b66905566413300591cc1a882a4f
-2024-08-25T15:54:32+02:00 INF BeaconBlock, before grafting, hash: 320c55726160c7fad09077dcae4d6df1eb11227fe374c3d305594b5e3e279204
-2024-08-25T15:54:32+02:00 INF BeaconBlock, after grafting, hash: 320c55726160c7fad09077dcae4d6df1eb11227fe374c3d305594b5e3e279204
 ```
 
 The generated `json` is the same as shown above.
 
 # proof generation
 
-This demo software generates a proof for the `finalized_checkpoint.root` property.
+This demo software generates a proof for the [BeaconState](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconstate) `finalized_checkpoint.root` property.
 
 It does this by
 - fetching the most recent finalized [BeaconBlock](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconblock) and the respective [BeaconState](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/beacon-chain.md#beaconstate)
